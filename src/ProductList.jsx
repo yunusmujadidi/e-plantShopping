@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
+import { addItem } from "./CartSlice";
+import { useDispatch } from "react-redux";
+
 function ProductList({ onHomeClick }) {
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-  const [addedToCard, setAddedToCard] = useState({});
+  const [addedToCart, setAddedToCart] = useState({});
+
+  const { dispatch } = useDispatch();
 
   const plantsArray = [
     {
@@ -288,6 +293,15 @@ function ProductList({ onHomeClick }) {
     e.preventDefault();
     setShowCart(false);
   };
+
+  const handleAddToCart = (product) => {
+    dispatch(addItem(product));
+
+    setAddedToCart((prev) => ({
+      ...prev,
+      [product.name]: true,
+    }));
+  };
   return (
     <div>
       <div className="navbar" style={styleObj}>
@@ -343,14 +357,14 @@ function ProductList({ onHomeClick }) {
       </div>
       {!showCart ? (
         <div className="product-grid">
-          {plantsArray.map((category) => (
-            <div key={category.plants.name}>
+          {plantsArray.map((category, index) => (
+            <div key={index}>
               <h1>
                 <div>{category.category}</div>
               </h1>
               <div className="product-list">
-                {category.plants.map((plant) => (
-                  <div className="product-card" key={plant}>
+                {category.plants.map((plant, index) => (
+                  <div className="product-card" key={index}>
                     <img
                       className="product-image"
                       src={plant.image}
